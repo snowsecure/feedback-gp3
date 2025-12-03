@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import ScenarioPanel from './ScenarioPanel';
 import ChatPanel from './ChatPanel';
 import CoachingPanel from './CoachingPanel';
@@ -14,11 +14,21 @@ export default function FeedbackApp() {
     const [coaching, setCoaching] = useState<CoachingResult | null>(null);
     const [status, setStatus] = useState<'idle' | 'active' | 'coaching' | 'completed'>('idle');
     const [isTyping, setIsTyping] = useState(false);
+    const messagesRef = useRef<Message[]>([]);
+    const isTypingRef = useRef(isTyping);
 
     // Initialize with a scenario
     useEffect(() => {
         handleRegenerate();
     }, []);
+
+    useEffect(() => {
+        messagesRef.current = messages;
+    }, [messages]);
+
+    useEffect(() => {
+        isTypingRef.current = isTyping;
+    }, [isTyping]);
 
     const handleDifficultyChange = (newDifficulty: Difficulty | 'Random') => {
         setDifficulty(newDifficulty);
@@ -78,8 +88,24 @@ export default function FeedbackApp() {
         }
     };
 
+    const waitForTypingToFinish = () => new Promise<void>((resolve) => {
+        if (!isTypingRef.current) {
+            resolve();
+            return;
+        }
+
+        const interval = setInterval(() => {
+            if (!isTypingRef.current) {
+                clearInterval(interval);
+                resolve();
+            }
+        }, 100);
+    });
+
     const handleEndSession = async () => {
         if (!scenario) return;
+
+        await waitForTypingToFinish();
         setStatus('coaching');
 
         try {
@@ -88,7 +114,7 @@ export default function FeedbackApp() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     scenario,
-                    history: messages,
+                    history: messagesRef.current,
                     difficulty: scenario.difficulty
                 }),
             });
