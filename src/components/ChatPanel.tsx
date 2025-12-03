@@ -57,7 +57,13 @@ export default function ChatPanel({
             <div className="panel-header">
                 <h2>Conversation</h2>
                 {isSessionActive && (
-                    <button className="btn btn-secondary" onClick={onEndSession} style={{ fontSize: '0.8rem', padding: '0.4rem 1rem' }}>
+                    <button
+                        className="btn btn-secondary"
+                        onClick={onEndSession}
+                        disabled={isTyping}
+                        style={{ fontSize: '0.8rem', padding: '0.4rem 1rem' }}
+                        title={isTyping ? 'Please wait for the employee to finish typing.' : undefined}
+                    >
                         End Session
                     </button>
                 )}
