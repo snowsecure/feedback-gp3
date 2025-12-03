@@ -45,12 +45,15 @@ export default function FeedbackApp() {
     const handleSendMessage = async (content: string) => {
         if (!scenario) return;
 
-        const newMessages: Message[] = [
-            ...messages,
-            { role: 'user', content }
-        ];
-        setMessages(newMessages);
+        let updatedHistory: Message[] = [];
+        setMessages(prev => {
+            const nextMessages = [...prev, { role: 'user', content }];
+            updatedHistory = nextMessages;
+            return nextMessages;
+        });
         setIsTyping(true);
+
+        const historyForRequest = updatedHistory.length ? updatedHistory : [...messages, { role: 'user', content }];
 
         try {
             const response = await fetch('/api/chat', {
@@ -58,7 +61,7 @@ export default function FeedbackApp() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     scenario,
-                    history: newMessages,
+                    history: historyForRequest,
                     difficulty: scenario.difficulty // Use resolved difficulty from scenario
                 }),
             });

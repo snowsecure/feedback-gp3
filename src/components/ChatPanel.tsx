@@ -32,7 +32,7 @@ export default function ChatPanel({
 
     const handleSubmit = (e?: React.FormEvent) => {
         e?.preventDefault();
-        if (!input.trim() || !isSessionActive) return;
+        if (!input.trim() || !isSessionActive || isTyping) return;
         onSendMessage(input);
         setInput('');
     };
@@ -108,7 +108,7 @@ export default function ChatPanel({
                             <button
                                 type="submit"
                                 className="btn btn-primary"
-                                disabled={!isSessionActive || !input.trim()}
+                                disabled={!isSessionActive || !input.trim() || isTyping}
                                 style={{
                                     position: 'absolute',
                                     bottom: '12px',
