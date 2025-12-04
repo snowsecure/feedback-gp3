@@ -21,23 +21,27 @@ export default function FeedbackApp() {
         setDifficulty(newDifficulty);
     };
 
+    const initializeScenario = useCallback(() => {
+        const newScenario = getRandomScenario(difficulty);
+        setScenario(newScenario);
+        setMessages([]);
+        setCoaching(null);
+        setStatus('idle');
+    }, [difficulty]);
+
     const handleRegenerate = useCallback(() => {
         if (status === 'active' && messages.length > 0) {
             if (!confirm("Regenerating will reset the current session. Continue?")) {
                 return;
             }
         }
-        const newScenario = getRandomScenario(difficulty);
-        setScenario(newScenario);
-        setMessages([]);
-        setCoaching(null);
-        setStatus('idle');
-    }, [difficulty, messages.length, status]);
+        initializeScenario();
+    }, [status, messages.length, initializeScenario]);
 
     // Initialize with a scenario
     useEffect(() => {
-        handleRegenerate();
-    }, [handleRegenerate]);
+        initializeScenario();
+    }, [initializeScenario]);
 
     useEffect(() => {
         messagesRef.current = messages;
@@ -124,6 +128,17 @@ export default function FeedbackApp() {
             const data = await response.json();
             setCoaching(data);
             setStatus('completed');
+
+            // Save the session
+            await fetch('/api/sessions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    scenario,
+                    messages: messagesRef.current,
+                    coaching: data
+                }),
+            });
         } catch (error) {
             console.error(error);
             alert("Failed to generate coaching feedback.");

@@ -1,0 +1,43 @@
+[
+  {
+    "id": "1e52a3cb-486b-4683-a9c1-0db09f0103be",
+    "timestamp": "2025-12-04T05:37:13.784Z",
+    "scenario": {
+      "id": "2",
+      "title": "Code Quality Issues",
+      "difficulty": "Basic",
+      "context": "You are the tech lead. The team is complaining about bugs in recent features.",
+      "employeeName": "Alex",
+      "employeeRole": "Junior Developer",
+      "issue": "Alex is merging code without sufficient testing, causing regressions.",
+      "personaTraits": "Eager to please but lacks attention to detail. Needs clear, specific guidance."
+    },
+    "messages": [
+      {
+        "role": "user",
+        "content": "Hi, I wanted to discuss the recent issues."
+      },
+      {
+        "role": "assistant",
+        "content": "Hi — thanks for bringing this up. I’m sorry for the regressions; I’ve been moving fast to hit deadlines and I realize I haven’t been thorough with testing, so I own that and want to fix it: I can immediately revert or hotfix the problematic merges, add failing tests for the broken behavior, and follow a stricter PR checklist plus require a second review/CI gate going forward — do you want me to start with the revert/hotfixes now or prioritize adding tests first?"
+      }
+    ],
+    "coaching": {
+      "summary": "The manager opened a conversation about recent code quality problems. The employee immediately owned the regressions, apologized, and proposed both immediate (revert/hotfix) and longer-term (tests, stricter PR checklist, second review/CI gate) fixes while asking which to prioritize.",
+      "strengths": [
+        "Started the conversation proactively rather than letting issues persist.",
+        "Used a brief, neutral opener that allowed the employee to respond without feeling attacked."
+      ],
+      "improvements": [
+        "Be more specific about the impact and expectations up front (which regressions, how they affected users or timelines) to set a clear frame for the discussion.",
+        "Acknowledge the employee's ownership and proposed solution before moving to next steps—this shows empathy and reinforces positive behavior.",
+        "Move quickly from problem identification to collaborative prioritization and support (e.g., ask what help is needed, set a timeline, and agree who will do what)."
+      ],
+      "suggestedPhrases": [
+        "Thanks for bringing this up — I appreciate you owning it and proposing concrete fixes. Can you briefly outline the immediate impact and your recommended first step so we can decide together?",
+        "I value that you proposed both hotfix and prevention actions. My priority is stability; let's start with a revert/hotfix to stop user impact, then add tests. What timeline and blockers do you foresee?",
+        "I want to support you in preventing this going forward — would extra review coverage, pairing, or time for testing help? Let's agree on the next steps and a check-in time."
+      ]
+    }
+  }
+]
