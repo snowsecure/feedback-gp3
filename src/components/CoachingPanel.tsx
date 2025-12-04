@@ -97,7 +97,9 @@ ${coachingText}
                             <div className="card" style={{ borderLeft: '4px solid var(--primary)' }}>
                                 <ul style={{ paddingLeft: '1.25rem', color: 'var(--text-primary)' }}>
                                     {coaching.suggestedPhrases.map((item, i) => (
-                                        <li key={i} style={{ marginBottom: '0.75rem', fontStyle: 'italic' }}>"{item}"</li>
+                                        <li key={i} style={{ marginBottom: '0.75rem', fontStyle: 'italic' }}>
+                                            “{item}”
+                                        </li>
                                     ))}
                                 </ul>
                             </div>
