@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import ScenarioPanel from './ScenarioPanel';
 import ChatPanel from './ChatPanel';
 import CoachingPanel from './CoachingPanel';
@@ -17,24 +17,11 @@ export default function FeedbackApp() {
     const messagesRef = useRef<Message[]>([]);
     const isTypingRef = useRef(isTyping);
 
-    // Initialize with a scenario
-    useEffect(() => {
-        handleRegenerate();
-    }, []);
-
-    useEffect(() => {
-        messagesRef.current = messages;
-    }, [messages]);
-
-    useEffect(() => {
-        isTypingRef.current = isTyping;
-    }, [isTyping]);
-
     const handleDifficultyChange = (newDifficulty: Difficulty | 'Random') => {
         setDifficulty(newDifficulty);
     };
 
-    const handleRegenerate = () => {
+    const handleRegenerate = useCallback(() => {
         if (status === 'active' && messages.length > 0) {
             if (!confirm("Regenerating will reset the current session. Continue?")) {
                 return;
@@ -45,7 +32,20 @@ export default function FeedbackApp() {
         setMessages([]);
         setCoaching(null);
         setStatus('idle');
-    };
+    }, [difficulty, messages.length, status]);
+
+    // Initialize with a scenario
+    useEffect(() => {
+        handleRegenerate();
+    }, [handleRegenerate]);
+
+    useEffect(() => {
+        messagesRef.current = messages;
+    }, [messages]);
+
+    useEffect(() => {
+        isTypingRef.current = isTyping;
+    }, [isTyping]);
 
     const handleStart = () => {
         if (!scenario) return;
