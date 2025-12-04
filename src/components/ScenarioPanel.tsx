@@ -68,8 +68,8 @@ export default function ScenarioPanel({
                                     <span style={{ color: 'var(--text-secondary)' }}>{scenario.employeeRole}</span>
                                 </div>
                             </div>
-                            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
-                                "{scenario.personaTraits}"
+                        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
+                                “{scenario.personaTraits}”
                             </p>
                         </div>
 
