@@ -57,7 +57,7 @@ export default function FeedbackApp() {
 
         let updatedHistory: Message[] = [];
         setMessages(prev => {
-            const nextMessages = [...prev, { role: 'user', content }];
+            const nextMessages: Message[] = [...prev, { role: 'user', content }];
             updatedHistory = nextMessages;
             return nextMessages;
         });

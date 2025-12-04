@@ -57,6 +57,8 @@ body {
   height: 100vh;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
+  display: flex;
+  flex-direction: column;
 }
 
 a {
@@ -68,10 +70,44 @@ a {
 .app-layout {
   display: grid;
   grid-template-columns: 380px 1fr 400px;
-  height: 100vh;
+  flex: 1;
+  min-height: 0;
+  /* Important for nested scrolling */
   gap: 1.5rem;
   padding: 1.5rem;
   background-color: var(--background);
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  z-index: 20;
+}
+
+.logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+}
+
+.site-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.site-footer {
+  padding: 0.75rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
 }
 
 /* Panels - Floating Card Style */
@@ -103,6 +139,12 @@ a {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.created-by {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .panel-content {

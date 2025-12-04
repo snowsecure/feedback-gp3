@@ -55,7 +55,6 @@ Do NOT act like an AI.
                 { role: 'system', content: systemPrompt },
                 ...history,
             ],
-            temperature: 0.7,
         });
 
         return completion.choices[0].message.content || "...";
@@ -107,7 +106,6 @@ Focus on:
                 { role: 'user', content: `Here is the conversation transcript:\n\n${transcript}` },
             ],
             response_format: { type: "json_object" },
-            temperature: 0.5,
         });
 
         const content = completion.choices[0].message.content;
