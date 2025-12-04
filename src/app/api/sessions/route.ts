@@ -22,3 +22,18 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
+
+export async function DELETE() {
+    try {
+        const fs = require('fs');
+        const path = require('path');
+        const DATA_DIR = path.join(process.cwd(), 'data');
+        const SESSIONS_FILE = path.join(DATA_DIR, 'sessions.json');
+
+        fs.writeFileSync(SESSIONS_FILE, JSON.stringify([], null, 2));
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Error clearing sessions:', error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    }
+}
