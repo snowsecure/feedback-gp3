@@ -1,3 +1,8 @@
+html,
+body {
+  height: 100%;
+}
+
 :root {
   /* Modern Palette - Indigo/Violet Theme */
   --primary: #4F46E5;
@@ -55,6 +60,7 @@ body {
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
+  height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-font-smoothing: antialiased;
@@ -63,11 +69,11 @@ body {
 }
 
 main {
-  flex: 1 0 auto;
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  min-height: auto;
-  overflow: visible;
+  min-height: 0;
+  overflow: hidden;
 }
 
 a {
@@ -79,10 +85,11 @@ a {
 .app-layout {
   display: grid;
   grid-template-columns: 380px 1fr 400px;
-  grid-template-rows: auto;
-  flex: 1 0 auto;
-  min-height: auto;
-  /* Important for nested scrolling */
+  grid-template-rows: 1fr;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
   gap: 1.5rem;
   padding: 1.5rem;
   background-color: var(--background);
@@ -158,6 +165,7 @@ a {
   box-shadow: var(--shadow-md);
   display: flex;
   flex-direction: column;
+  min-height: 0;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.5);
   /* Subtle highlight */

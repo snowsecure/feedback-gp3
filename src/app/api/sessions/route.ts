@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import { NextResponse } from 'next/server';
 import { getSessions, saveSession, Session } from '@/lib/storage';
 
@@ -25,8 +27,6 @@ export async function POST(request: Request) {
 
 export async function DELETE() {
     try {
-        const fs = require('fs');
-        const path = require('path');
         const DATA_DIR = path.join(process.cwd(), 'data');
         const SESSIONS_FILE = path.join(DATA_DIR, 'sessions.json');
 

@@ -29,7 +29,7 @@ export default function LoginPage() {
                 setError('Invalid credentials');
                 setIsLoading(false);
             }
-        } catch (err) {
+        } catch {
             setError('An error occurred');
             setIsLoading(false);
         }
