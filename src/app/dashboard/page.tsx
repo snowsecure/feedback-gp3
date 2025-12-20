@@ -85,6 +85,7 @@ export default function DashboardPage() {
     }
 
     return (
+        <main className="dashboard-page">
         <div className="dashboard-container">
             {/* Stats Bar */}
             <div className="stats-bar">
@@ -171,12 +172,21 @@ export default function DashboardPage() {
             </div>
 
             <style jsx>{`
+                .dashboard-page {
+                    flex: 1 1 auto;
+                    display: flex;
+                    flex-direction: column;
+                    min-height: 0;
+                    overflow: hidden;
+                }
+
                 .dashboard-container {
                     display: flex;
                     flex-direction: column;
-                    flex: 1;
+                    flex: 1 1 auto;
                     overflow: hidden;
                     background-color: var(--background);
+                    min-height: 0;
                 }
 
                 .stats-bar {
@@ -240,12 +250,14 @@ export default function DashboardPage() {
                 .dashboard-layout {
                     display: grid;
                     grid-template-columns: 300px 1fr 400px;
-                    flex: 1;
+                    flex: 1 1 auto;
                     overflow: hidden;
+                    min-height: 0;
                 }
 
                 .dashboard-panel {
                     height: 100%;
+                    min-height: 0;
                     overflow: hidden;
                     border-right: 1px solid var(--border);
                     display: flex;
@@ -284,6 +296,7 @@ export default function DashboardPage() {
                 .session-list {
                     overflow-y: auto;
                     flex: 1;
+                    min-height: 0;
                 }
 
                 .session-item {
@@ -356,5 +369,6 @@ export default function DashboardPage() {
                 }
             `}</style>
         </div>
+        </main>
     );
 }
