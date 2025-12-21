@@ -1,7 +1,7 @@
 "use client";
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import SailAttribution from '@/components/SailAttribution';
 
 export default function LoginPage() {
     const [username, setUsername] = useState('');
@@ -53,14 +53,7 @@ export default function LoginPage() {
                 backdropFilter: 'blur(10px)'
             }}>
                 <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
-                    <Image
-                        src="/sailboat-new.png"
-                        alt="Sailboat"
-                        width={140}
-                        height={140}
-                        style={{ objectFit: 'contain' }}
-                        priority
-                    />
+                    <SailAttribution size="large" />
                 </div>
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
