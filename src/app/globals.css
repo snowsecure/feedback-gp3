@@ -404,6 +404,119 @@ select:focus {
   color: var(--primary);
 }
 
+.sail-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  color: var(--text-secondary);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.sail-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  color: var(--text-primary);
+}
+
+.sail-badge--large {
+  padding: 0.85rem 1.15rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+}
+
+.sail-emoji {
+  font-size: 1.25rem;
+}
+
+.sail-text {
+  white-space: nowrap;
+}
+
+.sail-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 50;
+}
+
+.sail-modal-card {
+  position: relative;
+  width: min(360px, 90vw);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.sail-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+.sail-modal-emoji {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.sail-modal-subtitle {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-top: 0.35rem;
+}
+
+.sail-modal-title {
+  font-size: 1.35rem;
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 800;
+}
+
+.sail-modal-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  color: var(--primary);
+  font-weight: 600;
+  border: 1px solid var(--border);
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  text-decoration: none;
+  background: #f8fafc;
+}
+
+.sail-modal-email:hover {
+  background: var(--primary-light);
+}
+
 /* Responsive */
 @media (max-width: 1280px) {
   .app-layout {
