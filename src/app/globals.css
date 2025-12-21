@@ -404,6 +404,236 @@ select:focus {
   color: var(--primary);
 }
 
+.sail-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  color: var(--text-secondary);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.sail-badge:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+  color: var(--text-primary);
+}
+
+.sail-badge--large {
+  padding: 0.85rem 1.15rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+}
+
+.sail-emoji {
+  font-size: 1.25rem;
+}
+
+.sail-text {
+  white-space: nowrap;
+}
+
+.sail-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 50;
+}
+
+.sail-modal-card {
+  position: relative;
+  width: min(360px, 90vw);
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.sail-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--text-tertiary);
+  cursor: pointer;
+}
+
+.sail-modal-emoji {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.sail-modal-subtitle {
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-top: 0.35rem;
+}
+
+.sail-modal-title {
+  font-size: 1.35rem;
+  margin: 0;
+  color: var(--text-primary);
+  font-weight: 800;
+}
+
+.sail-modal-email {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  color: var(--primary);
+  font-weight: 600;
+  border: 1px solid var(--border);
+  padding: 0.65rem 1rem;
+  border-radius: 10px;
+  text-decoration: none;
+  background: #f8fafc;
+}
+
+.sail-modal-email:hover {
+  background: var(--primary-light);
+}
+
+.scenario-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.5);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 60;
+}
+
+.scenario-modal {
+  width: min(760px, 95vw);
+  max-height: 90vh;
+  overflow: auto;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.18);
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.scenario-modal__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.scenario-modal__eyebrow {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.scenario-modal__title {
+  margin: 0.15rem 0 0;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+}
+
+.scenario-modal__close {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.scenario-modal__helper {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.scenario-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.scenario-modal__label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.scenario-modal__label input,
+.scenario-modal__label textarea {
+  background: var(--surface-alt);
+}
+
+.scenario-modal__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.85rem;
+}
+
+.scenario-modal__error {
+  color: var(--error);
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.scenario-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.scenario-modal__tip {
+  margin: 0.25rem 0 0.1rem;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.required {
+  color: var(--error);
+}
+
 /* Responsive */
 @media (max-width: 1280px) {
   .app-layout {

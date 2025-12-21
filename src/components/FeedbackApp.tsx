@@ -6,28 +6,115 @@ import ChatPanel from './ChatPanel';
 import CoachingPanel from './CoachingPanel';
 import { Scenario, Difficulty, getRandomScenario } from '@/lib/scenarios';
 import { Message, CoachingResult } from '@/lib/openai';
+import { CustomScenarioDetails } from '@/lib/customScenario';
+
+const difficultyOptions: Difficulty[] = ['Basic', 'Moderate', 'Advanced'];
 
 export default function FeedbackApp() {
     const [scenario, setScenario] = useState<Scenario | null>(null);
     const [difficulty, setDifficulty] = useState<Difficulty | 'Random'>('Basic');
+    const [scenarioMode, setScenarioMode] = useState<'preset' | 'custom'>('preset');
+    const [customScenario, setCustomScenario] = useState<CustomScenarioDetails>({
+        title: '',
+        context: '',
+        issue: '',
+        employeeName: '',
+        employeeRole: '',
+        personaTraits: '',
+    });
     const [messages, setMessages] = useState<Message[]>([]);
     const [coaching, setCoaching] = useState<CoachingResult | null>(null);
     const [status, setStatus] = useState<'idle' | 'active' | 'coaching' | 'completed'>('idle');
     const [isTyping, setIsTyping] = useState(false);
+    const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
     const messagesRef = useRef<Message[]>([]);
     const isTypingRef = useRef(isTyping);
 
-    const handleDifficultyChange = (newDifficulty: Difficulty | 'Random') => {
-        setDifficulty(newDifficulty);
-    };
+    const resolveDifficulty = useCallback((value: Difficulty | 'Random'): Difficulty => {
+        if (value === 'Random') {
+            const randomIndex = Math.floor(Math.random() * difficultyOptions.length);
+            return difficultyOptions[randomIndex];
+        }
+        return value;
+    }, []);
 
-    const initializeScenario = useCallback(() => {
-        const newScenario = getRandomScenario(difficulty);
+    const buildCustomScenario = useCallback((
+        diffOverride?: Difficulty | 'Random',
+        data?: CustomScenarioDetails
+    ): Scenario => {
+        const form = data ?? customScenario;
+        const resolvedDifficulty = resolveDifficulty(diffOverride ?? difficulty);
+
+        return {
+            id: 'custom',
+            title: form.title.trim() || 'Custom Scenario',
+            difficulty: resolvedDifficulty,
+            context: form.context.trim() || 'Describe the setting for your conversation.',
+            employeeName: form.employeeName.trim() || 'Employee',
+            employeeRole: form.employeeRole.trim() || 'Team Member',
+            issue: form.issue.trim() || 'Describe the issue you want to practice discussing.',
+            personaTraits: form.personaTraits.trim() || 'Respond realistically based on the issue and difficulty level.',
+        };
+    }, [customScenario, difficulty, resolveDifficulty]);
+
+    const resetSessionWithScenario = useCallback((newScenario: Scenario, nextStatus: 'idle' | 'active' = 'idle') => {
         setScenario(newScenario);
         setMessages([]);
         setCoaching(null);
-        setStatus('idle');
-    }, [difficulty]);
+        setStatus(nextStatus);
+    }, []);
+
+    const handleDifficultyChange = (newDifficulty: Difficulty | 'Random') => {
+        if (status === 'active' && messages.length > 0) {
+            if (!confirm("Changing difficulty will reset the current session. Continue?")) {
+                return;
+            }
+        }
+
+        setDifficulty(newDifficulty);
+        const nextScenario = scenarioMode === 'preset'
+            ? getRandomScenario(newDifficulty)
+            : buildCustomScenario(newDifficulty);
+
+        resetSessionWithScenario(nextScenario);
+    };
+
+    const handleScenarioModeChange = (mode: 'preset' | 'custom') => {
+        if (mode === 'custom') {
+            if (status === 'active' && messages.length > 0) {
+                if (!confirm("Switching scenario mode will reset the current session. Continue?")) {
+                    return;
+                }
+                setMessages([]);
+                setCoaching(null);
+                setStatus('idle');
+            }
+            setIsCustomModalOpen(true);
+            return;
+        }
+
+        if (status === 'active' && messages.length > 0) {
+            if (!confirm("Switching scenario mode will reset the current session. Continue?")) {
+                return;
+            }
+        }
+
+        setScenarioMode('preset');
+        const nextScenario = getRandomScenario(difficulty);
+        resetSessionWithScenario(nextScenario);
+    };
+
+    const handleSubmitCustomScenario = (formData: CustomScenarioDetails) => {
+        const nextScenario = buildCustomScenario(undefined, formData);
+        setCustomScenario(formData);
+        setScenarioMode('custom');
+        resetSessionWithScenario(nextScenario);
+        setIsCustomModalOpen(false);
+    };
+
+    const handleCloseCustomModal = () => {
+        setIsCustomModalOpen(false);
+    };
 
     const handleRegenerate = useCallback(() => {
         if (status === 'active' && messages.length > 0) {
@@ -35,13 +122,17 @@ export default function FeedbackApp() {
                 return;
             }
         }
-        initializeScenario();
-    }, [status, messages.length, initializeScenario]);
+        const newScenario = scenarioMode === 'preset'
+            ? getRandomScenario(difficulty)
+            : buildCustomScenario();
+        resetSessionWithScenario(newScenario);
+    }, [status, messages, scenarioMode, difficulty, resetSessionWithScenario, buildCustomScenario]);
 
     // Initialize with a scenario
     useEffect(() => {
-        initializeScenario();
-    }, [initializeScenario]);
+        resetSessionWithScenario(getRandomScenario(difficulty));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         messagesRef.current = messages;
@@ -51,7 +142,23 @@ export default function FeedbackApp() {
         isTypingRef.current = isTyping;
     }, [isTyping]);
 
+    const isCustomScenarioValid = Boolean(
+        customScenario.employeeName.trim() &&
+        customScenario.context.trim() &&
+        customScenario.issue.trim()
+    );
+
     const handleStart = () => {
+        if (scenarioMode === 'custom') {
+            if (!isCustomScenarioValid) {
+                alert("Please enter an employee name, scenario context, and issue to practice.");
+                return;
+            }
+            const customScenarioDetails = buildCustomScenario();
+            resetSessionWithScenario(customScenarioDetails, 'active');
+            return;
+        }
+
         if (!scenario) return;
         setStatus('active');
     };
@@ -150,11 +257,19 @@ export default function FeedbackApp() {
         <div className="app-layout">
             <ScenarioPanel
                 scenario={scenario}
+                scenarioMode={scenarioMode}
                 selectedDifficulty={difficulty}
+                customScenario={customScenario}
+                onScenarioModeChange={handleScenarioModeChange}
+                onOpenCustomModal={() => setIsCustomModalOpen(true)}
+                onCloseCustomModal={handleCloseCustomModal}
+                onSubmitCustomScenario={handleSubmitCustomScenario}
+                isCustomModalOpen={isCustomModalOpen}
                 onDifficultyChange={handleDifficultyChange}
                 onRegenerate={handleRegenerate}
                 onStart={handleStart}
                 isSessionActive={status === 'active'}
+                isCustomScenarioValid={isCustomScenarioValid}
             />
             <ChatPanel
                 scenario={scenario}
