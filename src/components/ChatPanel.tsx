@@ -91,7 +91,11 @@ export default function ChatPanel({
                             {isTyping && (
                                 <div className="message employee">
                                     <div className="message-sender">{scenario.employeeName}</div>
-                                    <div className="typing-indicator">Typing...</div>
+                                    <div className="typing-indicator">
+                                        <div className="typing-dot"></div>
+                                        <div className="typing-dot"></div>
+                                        <div className="typing-dot"></div>
+                                    </div>
                                 </div>
                             )}
                             <div ref={messagesEndRef} />

@@ -4,13 +4,13 @@ body {
 }
 
 :root {
-  /* Modern Palette - Indigo/Violet Theme */
-  --primary: #4F46E5;
-  /* Indigo 600 */
-  --primary-hover: #4338CA;
-  /* Indigo 700 */
-  --primary-light: #EEF2FF;
-  /* Indigo 50 */
+  /* Stewart Brand Palette - Deep Red Theme */
+  --primary: #9e2339;
+  /* Stewart Red */
+  --primary-hover: #7a1a2b;
+  /* Darker Red */
+  --primary-light: #fcf2f4;
+  /* Very Light Red Tint */
 
   --secondary: #10B981;
   /* Emerald 500 */
@@ -263,12 +263,12 @@ p {
 .btn-primary {
   background-color: var(--primary);
   color: white;
-  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 4px 6px -1px rgba(158, 35, 57, 0.3);
 }
 
 .btn-primary:hover {
   background-color: var(--primary-hover);
-  box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.4);
+  box-shadow: 0 6px 8px -1px rgba(158, 35, 57, 0.4);
   transform: translateY(-1px);
 }
 
@@ -354,7 +354,7 @@ select:focus {
 
 .message.manager {
   align-self: flex-end;
-  background: linear-gradient(135deg, var(--primary) 0%, #6366F1 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, #be123c 100%);
   color: white;
   border-bottom-right-radius: 4px;
 }
@@ -546,5 +546,42 @@ select:focus {
 
   .panel {
     border-radius: var(--radius-md);
+  }
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+}
+
+.typing-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--text-secondary);
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.typing-dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+
+  0%,
+  80%,
+  100% {
+    transform: scale(0);
+  }
+
+  40% {
+    transform: scale(1.0);
   }
 }

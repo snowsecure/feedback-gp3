@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Scenario, Difficulty } from '@/lib/scenarios';
 import { CustomScenarioDetails } from '@/lib/customScenario';
+import CustomScenarioModal from './CustomScenarioModal';
 
 interface ScenarioPanelProps {
     scenario: Scenario | null;
@@ -29,6 +30,8 @@ export default function ScenarioPanel({
     isSessionActive,
     isCustomScenarioValid,
 }: ScenarioPanelProps) {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const previewDifficulty: Difficulty = selectedDifficulty === 'Random' ? 'Basic' : selectedDifficulty;
     const customPreview: Scenario = {
         id: 'custom-preview',
@@ -51,162 +54,152 @@ export default function ScenarioPanel({
 
     return (
         <div className="panel">
-            <div className="panel-header">
-                <h2>Scenario Setup</h2>
-            </div>
-            <div className="panel-content">
-                <div style={{ marginBottom: '2rem' }}>
-                    <h3>Difficulty Level</h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
-                        {(['Basic', 'Moderate', 'Advanced', 'Random'] as const).map((level) => (
-                            <button
-                                key={level}
-                                className={`btn ${selectedDifficulty === level ? 'btn-primary' : 'btn-secondary'}`}
-                                onClick={() => onDifficultyChange(level)}
-                                disabled={isSessionActive}
-                                style={{ width: '100%', justifyContent: 'center' }}
-                            >
-                                {level}
-                            </button>
-                        ))}
-                    </div>
+            <CustomScenarioModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                customScenario={customScenario}
+                onChange={onCustomScenarioChange}
+                onApply={() => {
+                    onScenarioModeChange('custom');
+                    setIsModalOpen(false);
+                }}
+            />
+
+            <div className="panel-header" style={{ flexDirection: 'column', alignItems: 'flex-start', gap: '1rem', paddingBottom: '1rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                    <h2 style={{ fontSize: '1.25rem' }}>Scenario Setup</h2>
+                    {scenarioToDisplay && (
+                        <span className={`tag tag-difficulty ${scenarioMode === 'custom' ? 'custom' : ''}`}>
+                            {selectedDifficulty === 'Random' ? '?' : scenarioToDisplay.difficulty}
+                        </span>
+                    )}
                 </div>
 
-                <div style={{ marginBottom: '1.5rem' }}>
-                    <h3>Scenario Source</h3>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem' }}>
+                {/* Controls Area */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%' }}>
+                    {/* Source Selection */}
+                    <div style={{ display: 'flex', background: 'var(--surface-alt)', padding: '4px', borderRadius: '8px', border: '1px solid var(--border)' }}>
                         <button
-                            className={`btn ${scenarioMode === 'preset' ? 'btn-primary' : 'btn-secondary'}`}
+                            className={`btn-segment ${scenarioMode === 'preset' ? 'active' : ''}`}
                             onClick={() => onScenarioModeChange('preset')}
                             disabled={isSessionActive}
-                            style={{ width: '100%', justifyContent: 'center' }}
                         >
-                            Suggested Scenarios
+                            Suggested
                         </button>
                         <button
-                            className={`btn ${scenarioMode === 'custom' ? 'btn-primary' : 'btn-secondary'}`}
-                            onClick={() => onScenarioModeChange('custom')}
+                            className={`btn-segment ${scenarioMode === 'custom' ? 'active' : ''}`}
+                            onClick={() => isSessionActive ? null : setIsModalOpen(true)}
                             disabled={isSessionActive}
-                            style={{ width: '100%', justifyContent: 'center' }}
                         >
-                            Create Your Own
+                            Custom
                         </button>
                     </div>
-                </div>
 
-                {scenarioMode === 'custom' && (
-                    <div className="card" style={{ marginBottom: '1.5rem' }}>
-                        <h3>Your Scenario Details</h3>
-                        <p style={{ marginTop: '-0.25rem' }}>Enter the same details as our presets to practice a real upcoming conversation.</p>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
-                            <div style={{ gridColumn: 'span 2' }}>
-                                <label style={{ display: 'block', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
-                                    Meeting Title (optional)
-                                </label>
-                                <input
-                                    type="text"
-                                    value={customScenario.title}
-                                    placeholder="Performance check-in with your team member"
-                                    onChange={(e) => onCustomScenarioChange({ title: e.target.value })}
-                                />
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
-                                    Employee Name
-                                </label>
-                                <input
-                                    type="text"
-                                    value={customScenario.employeeName}
-                                    placeholder="e.g., Jamie"
-                                    onChange={(e) => onCustomScenarioChange({ employeeName: e.target.value })}
-                                />
-                            </div>
-                            <div>
-                                <label style={{ display: 'block', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
-                                    Employee Role (optional)
-                                </label>
-                                <input
-                                    type="text"
-                                    value={customScenario.employeeRole}
-                                    placeholder="e.g., Senior Engineer"
-                                    onChange={(e) => onCustomScenarioChange({ employeeRole: e.target.value })}
-                                />
-                            </div>
-                            <div style={{ gridColumn: 'span 2' }}>
-                                <label style={{ display: 'block', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
-                                    Scenario / Context
-                                </label>
-                                <textarea
-                                    rows={2}
-                                    value={customScenario.context}
-                                    placeholder="Describe the setting and expectations for your upcoming meeting."
-                                    onChange={(e) => onCustomScenarioChange({ context: e.target.value })}
-                                />
-                            </div>
-                            <div style={{ gridColumn: 'span 2' }}>
-                                <label style={{ display: 'block', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
-                                    Issue to Address
-                                </label>
-                                <textarea
-                                    rows={2}
-                                    value={customScenario.issue}
-                                    placeholder="What feedback do you need to give? What behavior or impact is the issue?"
-                                    onChange={(e) => onCustomScenarioChange({ issue: e.target.value })}
-                                />
-                            </div>
-                            <div style={{ gridColumn: 'span 2' }}>
-                                <label style={{ display: 'block', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.35rem' }}>
-                                    Employee Persona (optional)
-                                </label>
-                                <textarea
-                                    rows={2}
-                                    value={customScenario.personaTraits}
-                                    placeholder="How do they typically react? What tone or behaviors should the simulation mimic?"
-                                    onChange={(e) => onCustomScenarioChange({ personaTraits: e.target.value })}
-                                />
-                            </div>
+                    {/* Difficulty Selection */}
+                    <div style={{ padding: '0 0.5rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                            <label style={{ fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)' }}>
+                                Difficulty
+                            </label>
+
+                            <button
+                                onClick={() => onDifficultyChange(selectedDifficulty === 'Random' ? 'Basic' : 'Random')}
+                                disabled={isSessionActive}
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    background: 'transparent',
+                                    border: 'none',
+                                    cursor: isSessionActive ? 'not-allowed' : 'pointer',
+                                    padding: '4px 8px',
+                                    borderRadius: '6px',
+                                    color: selectedDifficulty === 'Random' ? 'var(--primary)' : 'var(--text-tertiary)',
+                                    backgroundColor: selectedDifficulty === 'Random' ? 'var(--primary-light)' : 'transparent',
+                                    transition: 'all 0.2s'
+                                }}
+                            >
+                                <span style={{ fontSize: '1.2rem', lineHeight: 1 }}>🎲</span>
+                                <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Surprise Me</span>
+                            </button>
                         </div>
-                        <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginTop: '0.75rem' }}>
-                            Tip: Pick a difficulty above, then start a session to roleplay with your custom employee.
-                        </p>
-                    </div>
-                )}
 
-                {scenarioToDisplay ? (
-                    <div className="card">
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '0.5rem' }}>
-                                <h3>Scenario</h3>
-                                <span className="tag tag-difficulty">
-                                    {scenarioToDisplay.difficulty}
-                                </span>
+                        {selectedDifficulty !== 'Random' ? (
+                            <div className="difficulty-slider-container">
+                                <input
+                                    type="range"
+                                    min="0"
+                                    max="2"
+                                    step="1"
+                                    value={
+                                        selectedDifficulty === 'Basic' ? 0 :
+                                            selectedDifficulty === 'Moderate' ? 1 : 2
+                                    }
+                                    onChange={(e) => {
+                                        const val = parseInt(e.target.value);
+                                        const levels: Difficulty[] = ['Basic', 'Moderate', 'Advanced'];
+                                        onDifficultyChange(levels[val]);
+                                    }}
+                                    disabled={isSessionActive}
+                                    className="difficulty-slider"
+                                    style={{
+                                        width: '100%',
+                                        accentColor: 'var(--primary)',
+                                        cursor: isSessionActive ? 'not-allowed' : 'pointer'
+                                    }}
+                                />
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '0.5rem', fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500 }}>
+                                    <span>Basic</span>
+                                    <span>Moderate</span>
+                                    <span>Advanced</span>
+                                </div>
                             </div>
-                            <h4 style={{ fontSize: '1.1rem', marginBottom: '0.75rem', color: 'var(--text-primary)' }}>{scenarioToDisplay.title}</h4>
-                            <p style={{ fontSize: '0.95rem', lineHeight: '1.6' }}>
+                        ) : (
+                            <div style={{
+                                padding: '1rem',
+                                background: 'var(--surface-alt)',
+                                borderRadius: '8px',
+                                border: '1px dashed var(--border)',
+                                textAlign: 'center',
+                                fontSize: '0.9rem',
+                                color: 'var(--text-secondary)'
+                            }}>
+                                Difficulty will be randomized.
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div className="panel-content" style={{ paddingTop: '1rem' }}>
+                {scenarioToDisplay ? (
+                    <div className="card" style={{ border: 'none', background: 'transparent', padding: 0, boxShadow: 'none' }}>
+                        <div style={{ marginBottom: '1.25rem' }}>
+                            <h4 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>{scenarioToDisplay.title}</h4>
+                            <p style={{ fontSize: '0.95rem', lineHeight: '1.5', color: 'var(--text-secondary)' }}>
                                 {scenarioToDisplay.context}
                             </p>
                         </div>
 
-                        <div style={{ marginBottom: '1.5rem' }}>
-                            <h3>Employee</h3>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--primary-light)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
-                                    {scenarioToDisplay.employeeName.charAt(0)}
-                                </div>
-                                <div>
+                        <div className="compact-employee-card">
+                            <div className="avatar">
+                                {scenarioToDisplay.employeeName.charAt(0)}
+                            </div>
+                            <div className="details">
+                                <div className="name-row">
                                     <span style={{ fontWeight: '600', color: 'var(--text-primary)' }}>{scenarioToDisplay.employeeName}</span>
-                                    <span style={{ color: 'var(--text-tertiary)', margin: '0 0.5rem' }}>•</span>
+                                    <span className="dot">•</span>
                                     <span style={{ color: 'var(--text-secondary)' }}>{scenarioToDisplay.employeeRole}</span>
                                 </div>
+                                <div style={{ fontSize: '0.85rem', color: 'var(--text-tertiary)', fontStyle: 'italic' }}>
+                                    "{scenarioToDisplay.personaTraits}"
+                                </div>
                             </div>
-                            <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', fontStyle: 'italic' }}>
-                                “{scenarioToDisplay.personaTraits}”
-                            </p>
                         </div>
 
-                        <div style={{ marginBottom: '2rem' }}>
-                            <h3>The Issue</h3>
-                            <div style={{ padding: '1rem', background: '#FEF2F2', borderRadius: 'var(--radius-md)', border: '1px solid #FECACA', color: '#B91C1C', fontSize: '0.95rem' }}>
+                        <div style={{ marginTop: '1.5rem', marginBottom: '1.5rem' }}>
+                            <h3 style={{ marginBottom: '0.5rem' }}>The Issue</h3>
+                            <div className="issue-box">
                                 {scenarioToDisplay.issue}
                             </div>
                         </div>
@@ -233,14 +226,129 @@ export default function ScenarioPanel({
                         </div>
                     </div>
                 ) : (
-                    <div className="card" style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '3rem 1.5rem' }}>
-                        <p>Select a difficulty and click Regenerate to start, or switch to a custom scenario above.</p>
+                    <div style={{ textAlign: 'center', color: 'var(--text-secondary)', padding: '3rem 1.5rem', border: '2px dashed var(--border)', borderRadius: '12px' }}>
+                        <p>Select settings above & click Generate.</p>
                         <button className="btn btn-primary" onClick={onRegenerate} style={{ marginTop: '1rem' }}>
                             Generate Scenario
                         </button>
                     </div>
                 )}
             </div>
+            <style jsx>{`
+                .btn-segment {
+                    flex: 1;
+                    border: none;
+                    background: transparent;
+                    padding: 0.6rem;
+                    font-size: 0.9rem;
+                    border-radius: 6px;
+                    color: var(--text-secondary);
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                }
+                .btn-segment:hover:not(:disabled) {
+                    color: var(--text-primary);
+                }
+                .btn-segment.active {
+                    background: white;
+                    color: var(--primary);
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                    font-weight: 600;
+                }
+                .btn-segment:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+                
+                .btn-chip {
+                    flex: 1;
+                    padding: 8px 4px;
+                    border: 1px solid var(--border);
+                    background: white;
+                    border-radius: 8px;
+                    font-size: 0.8rem;
+                    color: var(--text-secondary);
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    font-weight: 500;
+                }
+                .btn-chip:hover:not(:disabled) {
+                    border-color: var(--primary);
+                    color: var(--primary);
+                    background: var(--primary-light);
+                }
+                .btn-chip.active {
+                    background: var(--primary);
+                    border-color: var(--primary);
+                    color: white;
+                    font-weight: 600;
+                    box-shadow: 0 2px 4px rgba(var(--primary-rgb), 0.2);
+                }
+                
+                .compact-employee-card {
+                    display: flex;
+                    align-items: flex-start;
+                    gap: 1rem;
+                    padding: 1.25rem;
+                    border-radius: 12px;
+                    background: var(--surface-alt);
+                    border: 1px solid transparent;
+                }
+                
+                .avatar {
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 12px;
+                    background: white;
+                    color: var(--primary);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 700;
+                    font-size: 1.2rem;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                    border: 1px solid var(--border);
+                    flex-shrink: 0;
+                }
+                
+                .name-row {
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    margin-bottom: 0.35rem;
+                    font-size: 1rem;
+                }
+                
+                .dot {
+                    font-size: 0.3rem;
+                    color: var(--text-tertiary);
+                    position: relative;
+                    top: -1px;
+                }
+                
+                .issue-box {
+                    padding: 1.25rem;
+                    background: #FFF1F2; /* Softer red background */
+                    border-radius: 12px;
+                    border: 1px solid #FECDD3;
+                    color: #BE123C; /* Darker, clear text */
+                    font-size: 0.95rem;
+                    line-height: 1.6;
+                    position: relative;
+                }
+                .issue-box::before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 12px;
+                    bottom: 12px;
+                    width: 4px;
+                    background: #F43F5E;
+                    border-radius: 0 4px 4px 0;
+                    display: none; /* Removing the hard left border for a cleaner look */
+                }
+            `}</style>
         </div>
     );
 }
